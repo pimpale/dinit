@@ -207,22 +207,24 @@ void base_process_service::run_child_proc(run_proc_params params) noexcept
         err.stage = exec_stage::READ_ENV_FILE;
         proc_env_map = service_env.build(main_env);
 
-        // print main env
-        std::cout << "Main environment:" << std::endl;
-        for (auto &env : main_env.env_list) {
-            std::cout << env << std::endl;
+        // Debug: print main env derived from system env
+        auto main_env_map = main_env.build();
+        std::cout << "DEBUG: Main environment (built from system):" << std::endl;
+        for (auto &env : main_env_map.env_list) {
+            if (env) std::cout << "  " << env << std::endl; // Add null check
         }
 
-        // print service env
-        std::cout << "Service environment:" << std::endl;
-        for (auto &env : service_env.env_list) {
-            std::cout << env << std::endl;
+        // Debug: print service env derived from system env
+        auto service_env_map_from_system = service_env.build();
+        std::cout << "DEBUG: Service environment (built from system):" << std::endl;
+        for (auto &env : service_env_map_from_system.env_list) {
+            if (env) std::cout << "  " << env << std::endl; // Add null check
         }
 
-        // print result env variables
-        std::cout << "Result environment:" << std::endl;
+        // print final combined environment for child process
+        std::cout << "Final combined environment for child:" << std::endl;
         for (auto &env : proc_env_map.env_list) {
-            std::cout << env << std::endl;
+            if (env) std::cout << "  " << env << std::endl; // Add null check
         }
     }
     catch (std::system_error &sys_err) {
