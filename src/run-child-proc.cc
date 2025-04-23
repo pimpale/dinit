@@ -206,6 +206,11 @@ void base_process_service::run_child_proc(run_proc_params params) noexcept
         // We'll re-use READ_ENV_FILE stage here; it's accurate enough.
         err.stage = exec_stage::READ_ENV_FILE;
         proc_env_map = service_env.build(main_env);
+        // print all env variables
+        std::cout << "Environment variables:" << std::endl;
+        for (auto &env : proc_env_map.env_list) {
+            std::cout << env << std::endl;
+        }
     }
     catch (std::system_error &sys_err) {
         errno = sys_err.code().value();
